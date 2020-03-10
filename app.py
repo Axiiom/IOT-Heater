@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request
 import routes
 
 # global state
@@ -21,8 +21,8 @@ def get_state():
 @app.route("/api/state", methods=["PUT"])
 def set_state():
     global gState
-    gState, resp = jsonify(routes.set_state(request, gState))
-    return resp
+    gState, resp = routes.set_state(request, gState)
+    return jsonify(resp)
 
 @app.route("/api/state/climate")
 def get_climate():
