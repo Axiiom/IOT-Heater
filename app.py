@@ -25,6 +25,7 @@ def continuous_sample(q):
             target, deadzone = q.get()
         
         rng = list(range(target-deadzone,target+deadzone))
+        print(threading.currentThread().ident)
         print(int(temperature))
         print(rng)
         
@@ -34,6 +35,7 @@ def continuous_sample(q):
         else:
             print("IN RANGE")
 
+        print("")
         time.sleep(1)
 
 # global state
@@ -66,8 +68,7 @@ def get_state():
 def set_state():
     global gState
     gState = routes.set_state(request, gState)
-    with threading.Lock():
-        q.put( (gState["climate"]["target"], gState["climate"]["deadzone"]) )
+    q.put( (gState["climate"]["target"], gState["climate"]["deadzone"]) )
     return jsonify({"state": gState})
 
 @app.route("/api/state/climate")
