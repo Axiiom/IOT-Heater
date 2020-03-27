@@ -18,31 +18,32 @@ def get_temperature():
 
 # global temperature sampling thread
 def continuous_sample(q):
-
     target, deadzone = q.get()
     while True:
         temperature = get_temperature()
         if not q.empty():
             target, deadzone = q.get()
         
+        rng = list(range(target-deadzone,target+deadzone))
         print(int(temperature))
-        print(list(range(target-deadzone,target+deadzone)))
+        print(rng)
+        
         if int(temperature) not in range( target-deadzone, target+deadzone ):
             print("NOT IN RANGE")
             # toggle the thing
         else:
             print("IN RANGE")
 
-        time.sleep(5)
+        time.sleep(1)
 
 # global state
 gState = {
     "mode": None,
     "action": None,
     "climate": {
-        "temperature": None,
-        "target": None,
-        "deadzone": None
+        "temperature": get_temperature(),
+        "target": 23,
+        "deadzone": 3
     }
 }
 
