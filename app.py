@@ -1,27 +1,37 @@
-from flask import Flask, jsonify, request
-import threading, queue, time
+import Adafruit_DHT, board
 
+from flask import Flask, jsonify, request
+import threading, queue, time, json
+from threading import Lock
 import routes
 
 
 # setup app
 app = Flask(__name__)
-
+SENSOR = Adafruit_DHT.DHT22
+DHT_PIN = 4
 
 def get_temperature():
-    pass
+    _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
+    return temperature
 
 
 # global temperature sampling thread
 def continuous_sample(q):
+
+    target, deadzone = q.get()
     while True:
         temperature = get_temperature()
         if not q.empty():
             target, deadzone = q.get()
-
+        
+        print(int(temperature))
+        print(list(range(target-deadzone,target+deadzone)))
         if int(temperature) not in range( target-deadzone, target+deadzone ):
+            print("NOT IN RANGE")
             # toggle the thing
-            pass
+        else:
+            print("IN RANGE")
 
         time.sleep(5)
 
@@ -38,10 +48,11 @@ gState = {
 
 # setup temperature sampler
 q = queue.Queue()
-with open("state.json") as file:
+'''with open("state.json") as file:
     file = json.loads(file)
     q.put(( file["climate"]["target"], file["climate"]["deadzone"] ))
-
+'''
+q.put((23, 2))
 sampler = threading.Thread(target=continuous_sample, args=(q, ))
 sampler.start()
 
@@ -54,7 +65,8 @@ def get_state():
 def set_state():
     global gState
     gState = routes.set_state(request, gState)
-    q.put( (gState["climate"]["target"], gState["climate"]["deadzone"]) )
+    with threading.Lock():
+        q.put( (gState["climate"]["target"], gState["climate"]["deadzone"]) )
     return jsonify({"state": gState})
 
 @app.route("/api/state/climate")
