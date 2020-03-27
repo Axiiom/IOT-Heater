@@ -4,6 +4,10 @@ import threading, queue, time
 import routes
 
 
+# setup app
+app = Flask(__name__)
+
+
 def get_temperature():
     pass
 
@@ -32,9 +36,6 @@ gState = {
     }
 }
 
-# setup app
-app = Flask(__name__)
-
 # setup temperature sampler
 q = queue.Queue()
 with open("state.json") as file:
@@ -52,9 +53,9 @@ def get_state():
 @app.route("/api/state", methods=["PUT"])
 def set_state():
     global gState
-    gState, resp = routes.set_state(request, gState)
+    gState = routes.set_state(request, gState)
     q.put( (gState["climate"]["target"], gState["climate"]["deadzone"]) )
-    return jsonify(resp)
+    return jsonify({"state": gState})
 
 @app.route("/api/state/climate")
 def get_climate():

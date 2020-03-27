@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 def get_state(gState):
     return gState
 
+
 # PUT  |  /api/state
 def set_state(request, gState):
     data = request.json
@@ -17,7 +18,8 @@ def set_state(request, gState):
         gState["climate"]["deadzone"] = climate["deadzone"]
 
     gState["mode"] = gState["mode"] if "mode" not in data else data["mode"]
-    return ( gState, gState )
+    return gState
+
 
 # GET  |  /api/state/climate
 def get_climate(gState):
