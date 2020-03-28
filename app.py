@@ -1,4 +1,4 @@
-# import Adafruit_DHT
+import Adafruit_DHT
 
 from flask import Flask, jsonify, request
 import threading, queue, time, json, requests
@@ -8,11 +8,11 @@ import routes
 
 # setup app
 app = Flask(__name__)
-# SENSOR = Adafruit_DHT.DHT22
+SENSOR = Adafruit_DHT.DHT22
 DHT_PIN = 4
 
 def get_temperature():
-    # _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
+    _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
     return 10
 
 def turn_on():
