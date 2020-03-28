@@ -18,9 +18,10 @@ DHT_PIN = 4
 
 # setup climate control system
 url = f"http://{(Config.hue_ip)}/api/{(Config.hue_apik)}"
-heater_url=f"http://{url}/lights/1/state"
-cooler_url=f"http://{url}/lights/2/state"
-system_url=f"http://{url}/groups/3/state"
+print(url)
+heater_url=f"{url}/lights/1/state"
+cooler_url=f"{url}/lights/2/state"
+system_url=f"{url}/groups/1/action"
 
 
 # climate control functions #
@@ -29,34 +30,38 @@ def get_temperature():
     return temperature
 
 def heat():
-    requests.put(heater_url, json={"on": True})
-    requests.put(cooler_url, json={"on": False})
+    color = { "bri": 123, "hue": 64570, "sat": 254 }
+    requests.put(system_url, json=color)
 
 def cool():
-    requests.put(cooler_url, json={"on": True})
-    requests.put(heater_url, json={"on": False})
+    color = { "bri": 239, "hue": 42637, "sat": 254 }
+    requests.put(system_url, json=color)
 
 def hold():
-    requests.put(url, json={"on": False})
+    color = { "bri": 144, "hue": 7676, "sat": 254 }
+    requests.put(system_url, json=color)
 
 
 # global temperature sampling thread
 def continuous_sample(q):
     target, deadzone = q.get()
     while True:
-        if (temperature := get_temperature()) is None:
+        temperature = get_temperature()
+        if temperature is None:
             continue
 
         target, deadzone = (target, deadzone) if q.empty() else q.get()
+        lower_bound = target-deadzone
+        upper_bound = target+deadzone
 
         print("ID:",threading.currentThread().ident)
         print("Temperature:",temperature)
-        print("Range [" + target-deadzone + " - " + target+deadzone + "]")
+        print(f"Range [{lower_bound} - {upper_bound}]")
 
-        if temperature < target-deadzone:
+        if temperature < lower_bound:
             print("Too cold\n")
             heat()
-        elif temperature > target+deadzone:
+        elif temperature > upper_bound:
             print("Too warm\n")
             cool()
         else:
@@ -79,6 +84,7 @@ gState = {
 # temperature sampler (climate control thread) #
 q = queue.Queue()
 sampler = threading.Thread(target=continuous_sample, args=(q, ))
+sampler.setDaemon(True)
 sampler.start()
 
 # routes #
