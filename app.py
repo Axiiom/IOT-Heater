@@ -1,4 +1,4 @@
-import Adafruit_DHT
+# import Adafruit_DHT
 
 from flask import Flask, jsonify, request
 import threading, queue, time, json, requests
@@ -8,12 +8,12 @@ import routes
 
 # setup app
 app = Flask(__name__)
-SENSOR = Adafruit_DHT.DHT22
+# SENSOR = Adafruit_DHT.DHT22
 DHT_PIN = 4
 
 def get_temperature():
-    _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
-    return temperature
+    # _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
+    return 10
 
 def turn_on():
     url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
@@ -27,8 +27,7 @@ def turn_off():
 def continuous_sample(q):
     target, deadzone = q.get()
     while True:
-        temperature = get_temperature()
-        if temperature is None:
+        if (temperature := get_temperature()) is None:
             continue
 
         temperature = int(temperature)
@@ -38,7 +37,6 @@ def continuous_sample(q):
         print("ID:",threading.currentThread().ident)
         print("Temperature:",temperature)
         print("Range:",rng)
-        
         if temperature not in rng:
             print("NOT IN RANGE")
             turn_off()
