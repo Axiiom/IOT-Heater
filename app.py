@@ -1,8 +1,13 @@
+# flask imports
+from flask import Flask, jsonify, request
+
+# python imports
+import threading, queue, time 
+import requests, json
 import Adafruit_DHT
 
-from flask import Flask, jsonify, request
-import threading, queue, time, json, requests
-from threading import Lock
+# custom module imports
+from config import Config
 import routes
 
 
@@ -11,21 +16,27 @@ app = Flask(__name__)
 SENSOR = Adafruit_DHT.DHT22
 DHT_PIN = 4
 
+# setup climate control system
+url = f"http://{(Config.hue_ip)}/api/{(Config.hue_apik)}"
+heater_url=f"http://{url}/lights/1/state"
+cooler_url=f"http://{url}/lights/2/state"
+system_url=f"http://{url}/groups/3/state"
 
+
+# climate control functions #
 def get_temperature():
     _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
     return temperature
 
 def heat():
-    url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
-    requests.put(url, json={"on": True})
+    requests.put(heater_url, json={"on": True})
+    requests.put(cooler_url, json={"on": False})
 
 def cool():
-    url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
-    requests.put(url, json={"on": False})
+    requests.put(cooler_url, json={"on": True})
+    requests.put(heater_url, json={"on": False})
 
 def hold():
-    url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
     requests.put(url, json={"on": False})
 
 
@@ -55,7 +66,7 @@ def continuous_sample(q):
         print("")
         time.sleep(4)
 
-# global state
+# system global state #
 gState = {
     "mode": "automatic",
     "climate": {
@@ -65,12 +76,12 @@ gState = {
     }
 }
 
-# setup temperature sampler
+# temperature sampler (climate control thread) #
 q = queue.Queue()
 sampler = threading.Thread(target=continuous_sample, args=(q, ))
 sampler.start()
 
-# routes
+# routes #
 @app.route("/api/state", methods=["GET"])
 def get_state():
     return jsonify(routes.get_state(gState))
