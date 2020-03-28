@@ -1,4 +1,4 @@
-import Adafruit_DHT, board
+import Adafruit_DHT
 
 from flask import Flask, jsonify, request
 import threading, queue, time, json, requests
@@ -39,7 +39,7 @@ def continuous_sample(q):
         print("Temperature:",temperature)
         print("Range:",rng)
         
-        if int(temperature) not in range( target-deadzone, target+deadzone ):
+        if temperature not in rng:
             print("NOT IN RANGE")
             turn_off()
         else:
