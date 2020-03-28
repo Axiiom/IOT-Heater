@@ -11,17 +11,23 @@ app = Flask(__name__)
 SENSOR = Adafruit_DHT.DHT22
 DHT_PIN = 4
 
+
 def get_temperature():
     _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
-    return 10
+    return temperature
 
-def turn_on():
+def heat():
     url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
     requests.put(url, json={"on": True})
 
-def turn_off():
+def cool():
     url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
     requests.put(url, json={"on": False})
+
+def hold():
+    url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
+    requests.put(url, json={"on": False})
+
 
 # global temperature sampling thread
 def continuous_sample(q):
@@ -30,19 +36,21 @@ def continuous_sample(q):
         if (temperature := get_temperature()) is None:
             continue
 
-        temperature = int(temperature)
         target, deadzone = (target, deadzone) if q.empty() else q.get()
-        rng = list(range(target-deadzone,target+deadzone+1))
 
         print("ID:",threading.currentThread().ident)
         print("Temperature:",temperature)
-        print("Range:",rng)
-        if temperature not in rng:
-            print("NOT IN RANGE")
-            turn_off()
+        print("Range [" + target-deadzone + " - " + target+deadzone + "]")
+
+        if temperature < target-deadzone:
+            print("Too cold\n")
+            heat()
+        elif temperature > target+deadzone:
+            print("Too warm\n")
+            cool()
         else:
-            print("IN RANGE")
-            turn_on()
+            print("Within deadzone\n")
+            hold()
 
         print("")
         time.sleep(4)
@@ -71,7 +79,11 @@ def get_state():
 def set_state():
     global gState
     gState = routes.set_state(request, gState)
-    q.put( (gState["climate"]["target"], gState["climate"]["deadzone"]) )
+
+    target = gState["climate"]["target"]
+    deadzone = gState["climate"]["deadzone"]
+    q.put( (target, deadzone) )
+
     return jsonify({"state": gState})
 
 @app.route("/api/state/climate")
