@@ -1,7 +1,7 @@
 import Adafruit_DHT, board
 
 from flask import Flask, jsonify, request
-import threading, queue, time, json
+import threading, queue, time, json, requests
 from threading import Lock
 import routes
 
@@ -15,47 +15,52 @@ def get_temperature():
     _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
     return temperature
 
+def turn_on():
+    url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
+    requests.put(url, json={"on": True})
+
+def turn_off():
+    url="http://192.168.1.12/api/eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu/lights/1/state"
+    requests.put(url, json={"on": False})
 
 # global temperature sampling thread
 def continuous_sample(q):
     target, deadzone = q.get()
     while True:
         temperature = get_temperature()
-        if not q.empty():
-            target, deadzone = q.get()
-        
-        rng = list(range(target-deadzone,target+deadzone))
-        print(threading.currentThread().ident)
-        print(int(temperature))
-        print(rng)
+        if temperature is None:
+            continue
+
+        temperature = int(temperature)
+        target, deadzone = (target, deadzone) if q.empty() else q.get()
+        rng = list(range(target-deadzone,target+deadzone+1))
+
+        print("ID:",threading.currentThread().ident)
+        print("Temperature:",temperature)
+        print("Range:",rng)
         
         if int(temperature) not in range( target-deadzone, target+deadzone ):
             print("NOT IN RANGE")
-            # toggle the thing
+            turn_off()
         else:
             print("IN RANGE")
+            turn_on()
 
         print("")
-        time.sleep(1)
+        time.sleep(4)
 
 # global state
 gState = {
-    "mode": None,
-    "action": None,
+    "mode": "automatic",
     "climate": {
         "temperature": get_temperature(),
-        "target": 23,
-        "deadzone": 3
+        "target": None,
+        "deadzone": None
     }
 }
 
 # setup temperature sampler
 q = queue.Queue()
-'''with open("state.json") as file:
-    file = json.loads(file)
-    q.put(( file["climate"]["target"], file["climate"]["deadzone"] ))
-'''
-q.put((23, 2))
 sampler = threading.Thread(target=continuous_sample, args=(q, ))
 sampler.start()
 
