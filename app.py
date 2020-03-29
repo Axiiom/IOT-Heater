@@ -21,7 +21,7 @@ url = f"http://{(Config.hue_ip)}/api/{(Config.hue_apik)}"
 print(url)
 heater_url=f"{url}/lights/1/state"
 cooler_url=f"{url}/lights/2/state"
-system_url=f"{url}/groups/1/action"
+system_url=f"{url}/groups/3/action"
 
 
 # climate control functions #
@@ -30,15 +30,15 @@ def get_temperature():
     return temperature
 
 def heat():
-    color = { "bri": 123, "hue": 64570, "sat": 254 }
+    color = { "on": True,  "bri": 239, "hue": 42637, "sat": 254 }
     requests.put(system_url, json=color)
 
 def cool():
-    color = { "bri": 239, "hue": 42637, "sat": 254 }
+    color = { "on": True, "bri": 123, "hue": 64570, "sat": 254 }
     requests.put(system_url, json=color)
 
 def hold():
-    color = { "bri": 144, "hue": 7676, "sat": 254 }
+    color = { "on": True, "bri": 144, "hue": 7676, "sat": 254 }
     requests.put(system_url, json=color)
 
 
@@ -46,8 +46,7 @@ def hold():
 def continuous_sample(q):
     target, deadzone = q.get()
     while True:
-        temperature = get_temperature()
-        if temperature is None:
+        if (temperature := get_temperature()) is None:
             continue
 
         target, deadzone = (target, deadzone) if q.empty() else q.get()
@@ -90,6 +89,7 @@ sampler.start()
 # routes #
 @app.route("/api/state", methods=["GET"])
 def get_state():
+    gState["climate"]["temperature"] = get_temperature()
     return jsonify(routes.get_state(gState))
 
 @app.route("/api/state", methods=["PUT"])
