@@ -1,9 +1,5 @@
 from datetime import datetime, timedelta
 
-# GET  |  /api/state
-def get_state(gState):
-    return gState
-
 
 # PUT  |  /api/state
 def set_state(request, gState):
@@ -21,14 +17,18 @@ def set_state(request, gState):
     return gState
 
 
-# GET  |  /api/state/climate
-def get_climate(gState):
-    return gState["climate"]
-
-
 # GET  |  /api/history
 def get_history(request):
     args = request.args
+
+    queryParams = list()
+    if "temperature" in args and args["temperature"]:
+        queryParams.append("temperature")
+    if "climate" in args and args["climate"]:
+        queryParams.append("temperature", "deadzone", "target")
+    if "mode" in args and args["mode"]:
+        queryParams.append("mode")
+
 
     limit = 200 if "limit" not in args else args["limit"]
     granularity = "hourly" if "granularity" not in args else \
