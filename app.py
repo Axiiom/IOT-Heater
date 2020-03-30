@@ -18,10 +18,8 @@ DHT_PIN = 4
 
 # setup climate control system
 url = f"http://{(Config.hue_ip)}/api/{(Config.hue_apik)}"
-print(url)
-heater_url=f"{url}/lights/1/state"
-cooler_url=f"{url}/lights/2/state"
-system_url=f"{url}/groups/3/action"
+heater_url=f"{url}/lights/5/state"
+light_url=f"{url}/lights/4/state"
 
 
 # climate control functions #
@@ -31,15 +29,18 @@ def get_temperature():
 
 def heat():
     color = { "on": True,  "bri": 239, "hue": 42637, "sat": 254 }
-    requests.put(system_url, json=color)
+    requests.put(light_url, json=color)
+    requests.put(heater_url, json={"on": True})
 
 def cool():
     color = { "on": True, "bri": 123, "hue": 64570, "sat": 254 }
-    requests.put(system_url, json=color)
+    requests.put(light_url, json=color)
+    requests.put(heater_url, json={"on": False})
 
 def hold():
     color = { "on": True, "bri": 144, "hue": 7676, "sat": 254 }
-    requests.put(system_url, json=color)
+    requests.put(light_url, json=color)
+    requests.put(heater_url, json={"on": False})
 
 
 # global temperature sampling thread

@@ -1,0 +1,320 @@
+{
+  "1": {
+    "state": {
+      "on": true,
+      "bri": 254,
+      "hue": 39392,
+      "sat": 13,
+      "effect": "none",
+      "xy": [
+        0.3691,
+        0.3719
+      ],
+      "ct": 230,
+      "alert": "select",
+      "colormode": "xy",
+      "mode": "homeautomation",
+      "reachable": true
+    },
+    "swupdate": {
+      "state": "noupdates",
+      "lastinstall": "2020-03-10T18:42:39"
+    },
+    "type": "Extended color light",
+    "name": "Back",
+    "modelid": "LCT016",
+    "manufacturername": "Signify Netherlands B.V.",
+    "productname": "Hue color lamp",
+    "capabilities": {
+      "certified": true,
+      "control": {
+        "mindimlevel": 1000,
+        "maxlumen": 800,
+        "colorgamuttype": "C",
+        "colorgamut": [
+          [
+            0.6915,
+            0.3083
+          ],
+          [
+            0.17,
+            0.7
+          ],
+          [
+            0.1532,
+            0.0475
+          ]
+        ],
+        "ct": {
+          "min": 153,
+          "max": 500
+        }
+      },
+      "streaming": {
+        "renderer": true,
+        "proxy": true
+      }
+    },
+    "config": {
+      "archetype": "ceilinground",
+      "function": "mixed",
+      "direction": "omnidirectional",
+      "startup": {
+        "mode": "safety",
+        "configured": true
+      }
+    },
+    "uniqueid": "00:17:88:01:03:ee:81:29-0b",
+    "swversion": "1.50.2_r30933",
+    "swconfigid": "B8000037",
+    "productid": "Philips-LCT016-1-A19ECLv5"
+  },
+  "2": {
+    "state": {
+      "on": true,
+      "bri": 254,
+      "hue": 39392,
+      "sat": 13,
+      "effect": "none",
+      "xy": [
+        0.3691,
+        0.3719
+      ],
+      "ct": 230,
+      "alert": "select",
+      "colormode": "xy",
+      "mode": "homeautomation",
+      "reachable": true
+    },
+    "swupdate": {
+      "state": "noupdates",
+      "lastinstall": "2020-03-10T18:43:39"
+    },
+    "type": "Extended color light",
+    "name": "Front",
+    "modelid": "LCT016",
+    "manufacturername": "Signify Netherlands B.V.",
+    "productname": "Hue color lamp",
+    "capabilities": {
+      "certified": true,
+      "control": {
+        "mindimlevel": 1000,
+        "maxlumen": 800,
+        "colorgamuttype": "C",
+        "colorgamut": [
+          [
+            0.6915,
+            0.3083
+          ],
+          [
+            0.17,
+            0.7
+          ],
+          [
+            0.1532,
+            0.0475
+          ]
+        ],
+        "ct": {
+          "min": 153,
+          "max": 500
+        }
+      },
+      "streaming": {
+        "renderer": true,
+        "proxy": true
+      }
+    },
+    "config": {
+      "archetype": "ceilinground",
+      "function": "mixed",
+      "direction": "omnidirectional",
+      "startup": {
+        "mode": "safety",
+        "configured": true
+      }
+    },
+    "uniqueid": "00:17:88:01:03:ee:df:e4-0b",
+    "swversion": "1.50.2_r30933",
+    "swconfigid": "B8000037",
+    "productid": "Philips-LCT016-1-A19ECLv5"
+  },
+  "3": {
+    "state": {
+      "on": true,
+      "bri": 254,
+      "hue": 39392,
+      "sat": 13,
+      "effect": "none",
+      "xy": [
+        0.3691,
+        0.3719
+      ],
+      "ct": 230,
+      "alert": "select",
+      "colormode": "xy",
+      "mode": "homeautomation",
+      "reachable": true
+    },
+    "swupdate": {
+      "state": "noupdates",
+      "lastinstall": "2020-03-10T18:42:50"
+    },
+    "type": "Extended color light",
+    "name": "Floor Lamp",
+    "modelid": "LCT016",
+    "manufacturername": "Signify Netherlands B.V.",
+    "productname": "Hue color lamp",
+    "capabilities": {
+      "certified": true,
+      "control": {
+        "mindimlevel": 1000,
+        "maxlumen": 800,
+        "colorgamuttype": "C",
+        "colorgamut": [
+          [
+            0.6915,
+            0.3083
+          ],
+          [
+            0.17,
+            0.7
+          ],
+          [
+            0.1532,
+            0.0475
+          ]
+        ],
+        "ct": {
+          "min": 153,
+          "max": 500
+        }
+      },
+      "streaming": {
+        "renderer": true,
+        "proxy": true
+      }
+    },
+    "config": {
+      "archetype": "floorshade",
+      "function": "mixed",
+      "direction": "omnidirectional",
+      "startup": {
+        "mode": "safety",
+        "configured": true
+      }
+    },
+    "uniqueid": "00:17:88:01:03:b3:04:4f-0b",
+    "swversion": "1.50.2_r30933",
+    "swconfigid": "B8000037",
+    "productid": "Philips-LCT016-1-A19ECLv5"
+  },
+  "4": {
+    "state": {
+      "on": true,
+      "bri": 144,
+      "hue": 7676,
+      "sat": 254,
+      "effect": "none",
+      "xy": [
+        0.5351,
+        0.4257
+      ],
+      "ct": 500,
+      "alert": "select",
+      "colormode": "hs",
+      "mode": "homeautomation",
+      "reachable": true
+    },
+    "swupdate": {
+      "state": "noupdates",
+      "lastinstall": "2020-03-20T18:46:54"
+    },
+    "type": "Extended color light",
+    "name": "Study",
+    "modelid": "LCT016",
+    "manufacturername": "Signify Netherlands B.V.",
+    "productname": "Hue color lamp",
+    "capabilities": {
+      "certified": true,
+      "control": {
+        "mindimlevel": 1000,
+        "maxlumen": 800,
+        "colorgamuttype": "C",
+        "colorgamut": [
+          [
+            0.6915,
+            0.3083
+          ],
+          [
+            0.17,
+            0.7
+          ],
+          [
+            0.1532,
+            0.0475
+          ]
+        ],
+        "ct": {
+          "min": 153,
+          "max": 500
+        }
+      },
+      "streaming": {
+        "renderer": true,
+        "proxy": true
+      }
+    },
+    "config": {
+      "archetype": "sultanbulb",
+      "function": "mixed",
+      "direction": "omnidirectional",
+      "startup": {
+        "mode": "safety",
+        "configured": true
+      }
+    },
+    "uniqueid": "00:17:88:01:03:d3:73:b2-0b",
+    "swversion": "1.50.2_r30933",
+    "swconfigid": "B8000037",
+    "productid": "Philips-LCT016-1-A19ECLv5"
+  },
+  "5": {
+    "state": {
+      "on": true,
+      "alert": "select",
+      "mode": "homeautomation",
+      "reachable": true
+    },
+    "swupdate": {
+      "state": "transferring",
+      "lastinstall": "2020-03-30T16:01:49"
+    },
+    "type": "On/Off plug-in unit",
+    "name": "Heater",
+    "modelid": "LOM004",
+    "manufacturername": "Signify Netherlands B.V.",
+    "productname": "Hue Smart plug",
+    "capabilities": {
+      "certified": true,
+      "control": {},
+      "streaming": {
+        "renderer": false,
+        "proxy": false
+      }
+    },
+    "config": {
+      "archetype": "plug",
+      "function": "functional",
+      "direction": "omnidirectional",
+      "startup": {
+        "mode": "safety",
+        "configured": true
+      }
+    },
+    "uniqueid": "00:17:88:01:08:04:60:95-0b",
+    "swversion": "1.55.10_r29112",
+    "swconfigid": "267DE928",
+    "productid": "SmartPlug_OnOff_v01-00_04"
+  }
+}
