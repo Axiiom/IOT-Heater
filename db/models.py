@@ -1,8 +1,9 @@
 # db imports
 from sqlalchemy import Column, Float, String, Integer, DateTime, Enum
+from sqlalchemy.ext.declarative import as_declarative
 
 # python imports
-import DateTime
+from datetime import datetime
 
 
 @as_declarative()

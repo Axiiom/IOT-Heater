@@ -3,8 +3,10 @@ from flask import g
 import Adafruit_DHT
 import requests
 import time
+import threading
 
-from model import TemperatureHistory
+from config import Config
+from db.models import TemperatureHistory
 
 # setup climate control system
 url = f"http://{(Config.hue_ip)}/api/{(Config.hue_apik)}"
@@ -47,27 +49,28 @@ def continuous_sample(q):
         target, deadzone = (target, deadzone) if q.empty() else q.get()
         lower_bound = target-deadzone
         upper_bound = target+deadzone
-
+        
+        '''
         g.db_session.add(TemperatureHistory({
             "temperature": temperature,
             "target": target,
             "deadzone": deadzone,
             "mode": None,
-        }))
+        }))'''
 
         print("ID:",threading.currentThread().ident)
         print("Temperature:",temperature)
         print(f"Range [{lower_bound} - {upper_bound}]")
 
-        if temperature < lower_bound and lastState != "heat":
+        if temperature < lower_bound:
             lastState = "heat"
             print("Too cold\n")
             heat()
-        elif temperature > upper_bound and lastState != "cool":
+        elif temperature > upper_bound:
             print("Too warm\n")
             lastState = "cool"
             cool()
-        else if lastState != "hold":
+        else:
             print("Within deadzone\n")
             lastState = "hold"
             hold()

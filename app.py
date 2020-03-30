@@ -1,6 +1,7 @@
 # flask imports
-from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify, request, g
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 # python imports
 import threading, queue 
@@ -13,6 +14,9 @@ import util, routes
 
 # setup app
 app = Flask(__name__)
+
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+Session = scoped_session(sessionmaker(bind=engine))
 
 # system global state #
 gState = {
@@ -53,6 +57,7 @@ def get_state():
 
 @app.route("/api/state", methods=["PUT"])
 def set_state():
+    global gState
     gState = routes.set_state(request, gState)
 
     target = gState["climate"]["target"]
@@ -63,4 +68,5 @@ def set_state():
 
 @app.route("/api/history")
 def get_history():
-    return jsonify(routes.get_history(request))
+    numItems, history = routes.get_history(request)
+    return jsonify({ "numItems": numItems, "history": history})

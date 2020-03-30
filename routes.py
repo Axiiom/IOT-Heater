@@ -1,5 +1,7 @@
-from datetime import datetime, timedelta
+from flask import g
 
+from datetime import datetime, timedelta
+from db.models import TemperatureHistory
 
 # PUT  |  /api/state
 def set_state(request, gState):
@@ -19,6 +21,8 @@ def set_state(request, gState):
 
 # GET  |  /api/history
 def get_history(request):
+    resources = g.db_session.query(TemperatureHistory).all()
+    return (len(resources), [r.to_dict() for r in resources])
     args = request.args
 
     queryParams = list()

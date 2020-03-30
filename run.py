@@ -1,15 +1,11 @@
 from flask import Flask
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy import MetaData
 
-from app import app, sampler
+from app import app, sampler, engine
 from config import Config
+
 from db.models import *
 import routes
-
-
-engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
-Session = scoped_session(sessionmaker(bind=engine))
 
 if(__name__ == '__main__'):
     app.config.from_object(Config)
