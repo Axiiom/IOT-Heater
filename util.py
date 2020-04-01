@@ -24,55 +24,60 @@ def get_temperature():
 
 def heat():
     color = { "on": True,  "bri": 239, "hue": 42637, "sat": 254 }
-    requests.put(light_url, json=color)
-    requests.put(heater_url, json={"on": True})
+    try:
+        requests.put(light_url, json=color)
+        requests.put(heater_url, json={"on": True})
+    except Exception as e:
+        print(e)
 
 def cool():
     color = { "on": True, "bri": 123, "hue": 64570, "sat": 254 }
-    requests.put(light_url, json=color)
-    requests.put(heater_url, json={"on": False})
+    try:
+        requests.put(light_url, json=color)
+        requests.put(heater_url, json={"on": False})
+    except Exception as e:
+        print(e)
 
 def hold():
     color = { "on": True, "bri": 144, "hue": 7676, "sat": 254 }
-    requests.put(light_url, json=color)
-    requests.put(heater_url, json={"on": False})
-
+    try:
+        requests.put(light_url, json=color)
+        requests.put(heater_url, json={"on": False})
+    except Exception as e:
+        print(e)
 
 # global temperature sampling thread
 def continuous_sample(q):
-    target, deadzone = q.get()
-    lastState = "hold"
+    data = None if q.empty() else q.get()
+
+    # initialize data
+    target = 72 if data is None else data["climate"]["target"]
+    deadzone = 0.5 if data is None else data["climate"]["deadzone"]
+    mode = "automatic" if data is None else data["mode"]
+
     while True:
         if (temperature := get_temperature()) is None:
             continue
-
-        target, deadzone = (target, deadzone) if q.empty() else q.get()
-        lower_bound = target-deadzone
-        upper_bound = target+deadzone
         
-        '''
-        g.db_session.add(TemperatureHistory({
-            "temperature": temperature,
-            "target": target,
-            "deadzone": deadzone,
-            "mode": None,
-        }))'''
+        data = None if q.empty() else q.get()
+        target = target if data is None else data["climate"]["target"]
+        deadzone = deadzone if data is None else data["climate"]["deadzone"]
+        mode, state = (mode,state) if data is None else data["mode"]
 
         print("ID:",threading.currentThread().ident)
         print("Temperature:",temperature)
         print(f"Range [{lower_bound} - {upper_bound}]")
 
-        if temperature < lower_bound:
-            lastState = "heat"
+        manual_heat = mode == "manual" and state == "heat"
+        manual_cool = mode == "manual" and state == "cool"
+        if manual_heat or temperature < target-deadzone:
             print("Too cold\n")
             heat()
-        elif temperature > upper_bound:
+        elif manual_cool or temperature > target+deadzone:
             print("Too warm\n")
-            lastState = "cool"
             cool()
         else:
             print("Within deadzone\n")
-            lastState = "hold"
             hold()
 
         print("")
