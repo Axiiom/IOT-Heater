@@ -13,7 +13,10 @@ app = Flask(__name__)
 
 # system global state #
 gState = {
-    "mode": ["automatic", "heat"],
+    "mode": {
+        "automatic": True,
+        "action": "heat"
+    },
     "climate": {
         "temperature": util.get_temperature(),
         "target": None,

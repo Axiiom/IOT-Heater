@@ -51,26 +51,31 @@ def continuous_sample(q):
     data = None if q.empty() else q.get()
 
     # initialize data
-    target = 72 if data is None else data["climate"]["target"]
-    deadzone = 0.5 if data is None else data["climate"]["deadzone"]
-    mode,state = ["automatic","off"] if data is None else data["mode"][0]
+    target = None if data is None else data["climate"]["target"]
+    deadzone = None if data is None else data["climate"]["deadzone"]
+    automatic = None if data is None else data["mode"]["automatic"]
+    action = None if data is None else data["mode"]["action"]
 
     while True:
         if (temperature := get_temperature()) is None:
             continue
         
         data = None if q.empty() else q.get()
-        target = target if data is None else data["climate"]["target"]
-        deadzone = deadzone if data is None else data["climate"]["deadzone"]
-        mode, state = (mode,state) if data is None else data["mode"]
+        if data is None:
+            continue
 
+        target = data["climate"]["target"]
+        deadzone = data["climate"]["deadzone"]
+        automatic = data["mode"]["automatic"]
+        action = data["mode"]["action"]
+        
         print("ID:",threading.currentThread().ident)
         print("Temperature:",temperature)
         print("Deadzone:", deadzone)
         # print(f"Range [{lower_bound} - {upper_bound}]")
 
-        manual_heat = mode == "manual" and state == "heat"
-        manual_cool = mode == "manual" and state == "cool"
+        manual_heat = not automatic and action == "heat"
+        manual_cool = not automatic and state == "cool"
         if manual_heat or temperature < target-deadzone:
             print("Too cold\n")
             heat()
