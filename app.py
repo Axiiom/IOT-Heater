@@ -19,8 +19,8 @@ gState = {
     },
     "climate": {
         "temperature": util.get_temperature(),
-        "target": None,
-        "deadzone": None
+        "target": Config.DEFAULT_TARGET,
+        "deadzone": Config.DEFAULT_DEADZONE
     }
 }
 
