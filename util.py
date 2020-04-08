@@ -66,7 +66,8 @@ def continuous_sample(q):
 
         print("ID:",threading.currentThread().ident)
         print("Temperature:",temperature)
-        print(f"Range [{lower_bound} - {upper_bound}]")
+        print("Deadzone:", deadzone)
+        # print(f"Range [{lower_bound} - {upper_bound}]")
 
         manual_heat = mode == "manual" and state == "heat"
         manual_cool = mode == "manual" and state == "cool"
