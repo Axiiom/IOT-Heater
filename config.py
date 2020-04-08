@@ -9,5 +9,5 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "db", "db.db")
 
-    DEFAULT_TARGET = 76
+    DEFAULT_TARGET = 24
     DEFAULT_DEADZONE = 0.5

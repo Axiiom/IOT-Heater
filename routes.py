@@ -14,8 +14,13 @@ def set_state(request, gState):
         gState["climate"]["target"] = climate["target"]
     if "deadzone" in climate:
         gState["climate"]["deadzone"] = climate["deadzone"]
+    if "mode" in data:
+        mode = data["mode"]
+        if "automatic" in mode:
+            gState["mode"]["automatic"] = mode["automatic"]
+        if "action" in mode:
+            gState["mode"]["action"] = mode["action"]
 
-    gState["mode"] = gState["mode"] if "mode" not in data else data["mode"]
     return gState
 
 
