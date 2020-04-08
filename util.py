@@ -75,7 +75,7 @@ def continuous_sample(q):
         # print(f"Range [{lower_bound} - {upper_bound}]")
 
         manual_heat = not automatic and action == "heat"
-        manual_cool = not automatic and state == "cool"
+        manual_cool = not automatic and action == "cool"
         if manual_heat or temperature < target-deadzone:
             print("Too cold\n")
             heat()
