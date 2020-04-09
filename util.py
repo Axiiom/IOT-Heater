@@ -1,6 +1,6 @@
 from flask import g
 
-import Adafruit_DHT
+import adafruit_dht, board
 import requests
 import time
 import threading
@@ -14,12 +14,17 @@ heater_url=f"{url}/lights/5/state"
 light_url=f"{url}/lights/4/state"
 
 # Setup Temperature Sensor #
-SENSOR = Adafruit_DHT.DHT22
-DHT_PIN = 4
+dht_device = adafruit_dht.DHT22(board.D18)
 
 # climate control functions #
 def get_temperature():
-    _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
+    temperature = None
+    while temperature is None:
+        try:
+            temperature = dht_device.temperature
+        except RuntimeError as error:
+            print("error reading temperature:", error.args[0])
+
     return temperature
 
 def heat():
