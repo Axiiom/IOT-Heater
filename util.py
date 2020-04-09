@@ -62,9 +62,14 @@ def continuous_sample(q):
     action = None if data is None else data["mode"]["action"]
 
     while True:
-        data = data if q.empty() else q.get()
         print("getting temperature")
-        if (temperature := get_temperature()) is None or data is None:
+        data = data if q.empty() else q.get()
+        temperature = get_temperature()
+
+        if temperature is not None:
+            print(f"Temperature: {temperature}")
+
+        if temperature is None or data is None:
             print("continuing")
             time.sleep(4)
             continue
@@ -92,6 +97,4 @@ def continuous_sample(q):
             hold()
 
         print("")
-        for i in range(1,5):
-            print(f"{i}")
-            time.sleep(1)
+        time.sleep(4)
