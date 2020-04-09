@@ -59,11 +59,11 @@ def continuous_sample(q):
     while True:
         if (temperature := get_temperature()) is None:
             continue
-        
-        data = None if q.empty() else q.get()
-        if data is None:
+
+        if q.empty() and data is None:
             continue
 
+        data = None if q.empty() else q.get()
         target = data["climate"]["target"]
         deadzone = data["climate"]["deadzone"]
         automatic = data["mode"]["automatic"]
