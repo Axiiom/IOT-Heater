@@ -19,11 +19,10 @@ dht_device = adafruit_dht.DHT22(board.D4)
 # climate control functions #
 def get_temperature():
     temperature = None
-    while temperature is None:
-        try:
-            temperature = dht_device.temperature
-        except RuntimeError as error:
-            print("error reading temperature:", error.args[0])
+    try:
+        temperature = dht_device.temperature
+    except RuntimeError as error:
+        print("error reading temperature:", error.args[0])
 
     return temperature
 
