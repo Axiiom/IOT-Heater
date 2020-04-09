@@ -59,6 +59,7 @@ def continuous_sample(q):
     while True:
         data = data if q.empty() else q.get()
         if (temperature := get_temperature()) is None or data is None:
+            print("continuing")
             continue
 
         target = data["climate"]["target"]
