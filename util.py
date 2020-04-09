@@ -14,7 +14,7 @@ heater_url=f"{url}/lights/5/state"
 light_url=f"{url}/lights/4/state"
 
 # Setup Temperature Sensor #
-dht_device = adafruit_dht.DHT22(board.D18)
+dht_device = adafruit_dht.DHT22(board.D4)
 
 # climate control functions #
 def get_temperature():
@@ -66,6 +66,7 @@ def continuous_sample(q):
         print("getting temperature")
         if (temperature := get_temperature()) is None or data is None:
             print("continuing")
+            time.sleep(4)
             continue
 
         target = data["climate"]["target"]
