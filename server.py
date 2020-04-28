@@ -4,21 +4,24 @@ from _thread import *
 import controller 
 
 # connection info
-HOST = json.loads(open("config.json", 'r').read())["host"]
-PORT = json.loads(open("config.json", 'r').read())["port"]
-LOCK = threading.Lock()
+with open("config.json") as file:
+    js = json.loads(file.read())
+    HOST = js["host"]
+    PORT = js["port"]
 
-# create socket
-sock = socket.socket(
-    socket.AF_INET, 
-    socket.SOCK_STREAM
-)
-# bind to port and listen
+
+# create and setup socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((HOST,PORT))
-sock.listen(5)
 
+# setup state 
+LOCK = threading.Lock()
 ctrlr = controller.Controller()
+
+
+sock.listen(5)
 print(f"Server now awaiting connections on {HOST}:{PORT}")
+
 while True:
     print("\nwaiting for connection")
     conn, addr = sock.accept()

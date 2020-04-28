@@ -18,6 +18,31 @@ def dtstr():
     dt = datetime.now().time()
     return "[%d:%d:%d]" % (dt.hour, dt.minute, dt.second) 
 
+def controlClimate(controller):
+    def getTemperature():
+        return 0
+    
+    def hold():
+        pass
+    
+    def warm():
+        pass
+    
+    def cool():
+        pass
+
+    while True:
+        controller.temperature = getTemperature()
+        too_cold = controller.temperature < controller.target - controller.deadzone
+        too_warm = controller.temperature > controller.target + controller.deadzone
+
+        if too_cold:
+            warm()
+        else if too_warm:
+            cool()
+        else:
+            hold()
+
 def createConnection(connection, controller, addr, LOCK):
     addr = "%s:%d" % addr
     print("%s - Client connected: %s" % (dtstr(), addr))
@@ -26,9 +51,9 @@ def createConnection(connection, controller, addr, LOCK):
         try:
             while True:
                 print("%s - Sending data to %s" % (dtstr(), addr))
-                controller.temperature = random.randint(45,100)
+                controller.temperature = random.randint(10,99)
                 connection.sendall(bytes(repr(controller), encoding="utf-8"))
-                time.sleep(3)
+                time.sleep(0.05)
         except Exception as e:
             pass
 
