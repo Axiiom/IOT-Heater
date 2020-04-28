@@ -14,10 +14,14 @@ with open("config.json") as file:
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((HOST,PORT))
 
-# setup state 
+# setup climate control thread 
 LOCK = threading.Lock()
 ctrlr = controller.Controller()
-
+climateController = threading.Thread(
+    target=controller.controlClimate,
+    args=(ctrlr,)
+)
+climateController.start()
 
 sock.listen(5)
 print(f"Server now awaiting connections on {HOST}:{PORT}")

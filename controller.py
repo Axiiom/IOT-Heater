@@ -2,16 +2,18 @@ import json, time, threading, random
 from datetime import datetime
 
 class Controller():
-    def __init__(self, target=None, on=True):
+    def __init__(self, target=24, on=True, deadzone=0.2):
         self.temperature = 27
         self.target = target
         self.on = on
+        self.deadzone = deadzone
 
     def __repr__(self):
         return json.dumps({
             "temperature": self.temperature,
             "target": self.target,
-            "on": self.on
+            "on": self.on,
+            "deadzone": self.deadzone
         }, indent=4)
 
 def dtstr():
@@ -20,28 +22,34 @@ def dtstr():
 
 def controlClimate(controller):
     def getTemperature():
-        return 0
+        return random.randint(10,99)
     
     def hold():
+        print("Holding")
         pass
     
     def warm():
+        print("Too Warm")
         pass
     
     def cool():
+        print("Too Cold")
         pass
 
     while True:
         controller.temperature = getTemperature()
-        too_cold = controller.temperature < controller.target - controller.deadzone
-        too_warm = controller.temperature > controller.target + controller.deadzone
+        too_warm = controller.temperature < controller.target - controller.deadzone
+        too_cold = controller.temperature > controller.target + controller.deadzone
+        print("Temp: %d\tTarg: %d" % (controller.temperature, controller.target))
 
         if too_cold:
             warm()
-        else if too_warm:
+        elif too_warm:
             cool()
         else:
             hold()
+
+        time.sleep(5)
 
 def createConnection(connection, controller, addr, LOCK):
     addr = "%s:%d" % addr
@@ -51,9 +59,8 @@ def createConnection(connection, controller, addr, LOCK):
         try:
             while True:
                 print("%s - Sending data to %s" % (dtstr(), addr))
-                controller.temperature = random.randint(10,99)
                 connection.sendall(bytes(repr(controller), encoding="utf-8"))
-                time.sleep(0.05)
+                time.sleep(1)
         except Exception as e:
             pass
 
