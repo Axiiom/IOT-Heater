@@ -60,7 +60,7 @@ async def server(websocket, addr):
         g_state.CONNECTIONS.remove(websocket)
 
 
-def climate_controller():
+async def climate_controller():
     while True:
         if not g_state.on:
             continue
@@ -83,7 +83,6 @@ def climate_controller():
 
 
 # begin listening
-
 print("Setting up Websocket Server on port 3001 ... ")
 start_server = websockets.serve(server, HOST, PORT)
 print("Server running")
