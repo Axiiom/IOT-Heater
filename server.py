@@ -65,6 +65,7 @@ def climate_controller():
             continue
 
         temperature = get_temperature()
+        g_state.temperature = temperature
         too_hot = temperature > g_state.target + g_state.deadzone
         too_cold = temperature < g_state.target - g_state.deadzone
         if too_hot:
@@ -77,7 +78,7 @@ def climate_controller():
             print(f"{temperature} IS JUST RIGHT")
             hold()
 
-        time.sleep(1)
+        time.sleep(4)
 
 
 # begin listening
