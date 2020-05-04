@@ -1,37 +1,66 @@
-import socket, threading, json
-from _thread import *
+import asyncio
+import websockets
+import json
+import random
+import time
 
-import controller 
+from _thread import start_new_thread
 
-# connection info
-with open("config.json") as file:
-    js = json.loads(file.read())
-    HOST = js["host"]
-    PORT = js["port"]
+from state import State
+
+base_state = {
+    "temperature": 18,
+    "target": 24,
+    "deadzone": 0.2,
+    "on": True
+}
+
+g_state = State(**base_state)
+
+async def update_clients():
+    rep = repr(g_state)
+    await asyncio.wait( [client.send(rep) for client in g_state.CONNECTIONS] )
+
+async def echo(websocket, path):
+    g_state.CONNECTIONS.add(websocket)
+    try:
+        await websocket.send(repr(g_state))
+        while True:
+            print("waiting for message")
+            data = await websocket.recv()
+            js = json.loads(str(data))
+            if js["action"] == "update":
+                await update_clients()
+                print("Updating ... ")
+                print(js)
+            else:
+                print("Sending data ... ")
+                print(js)
+
+            await websocket.send(repr(g_state))
+    finally:
+        g_state.CONNECTIONS.remove(websocket)
+
+async def monitor():
+    def get_temperature():
+        return random.randint(0,100)
+
+    while True:
+        temperature = get_temperature()
+        
+        if g_state.temperature != temperature:
+            await update_clients()
+        else:
+            g_state.temperature = temperature
+
+        print(f"STATE: {repr(g_state)}")
+        time.sleep(1)
 
 
-# create and setup socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind((HOST,PORT))
+# begin listening
+start_server = websockets.serve(echo, "localhost", 3001)
 
-# setup climate control thread 
-LOCK = threading.Lock()
-ctrlr = controller.Controller()
-climateController = threading.Thread(
-    target=controller.controlClimate,
-    args=(ctrlr,)
-)
-climateController.start()
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_until_complete(monitor)
 
-sock.listen(5)
-print(f"Server now awaiting connections on {HOST}:{PORT}")
-
-while True:
-    print("\nwaiting for connection")
-    conn, addr = sock.accept()
-    start_new_thread(
-        controller.createConnection, 
-        (conn,ctrlr,addr,LOCK)
-    )
-
-sock.close()
+asyncio.get_event_loop().run_forever()
