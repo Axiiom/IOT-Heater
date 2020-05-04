@@ -65,17 +65,30 @@ def climate_controller():
         if not g_state.on:
             continue
 
-        g_state.temperature = get_temperature()
-        too_hot = g_state.temperature > g_state.target + g_state.deadzone
-        too_cold = g_state.temperature < g_state.target - g_state.deadzone
+        # g_state.temperature = get_temperature()
+        # too_hot = g_state.temperature > g_state.target + g_state.deadzone
+        # too_cold = g_state.temperature < g_state.target - g_state.deadzone
+        # if too_hot:
+        #     print("%s IS TOO HOT" % g_state.temperature)
+        #     cool()
+        # elif too_cold:
+        #     print("%s IS TOO COLD" % g_state.temperature)
+        #     heat()
+        # else:
+        #     print("%s IS JUST RIGHT" % g_state.temperature)
+        #     hold()
+
+        temperature = get_temperature()
+        too_hot = temperature > g_state.target + g_state.deadzone
+        too_cold = temperature < g_state.target - g_state.deadzone
         if too_hot:
-            print("%s IS TOO HOT" % g_state.temperature)
+            print("%s IS TOO HOT" % temperature)
             cool()
         elif too_cold:
-            print("%s IS TOO COLD" % g_state.temperature)
+            print("%s IS TOO COLD" % temperature)
             heat()
         else:
-            print("%s IS JUST RIGHT" % g_state.temperature)
+            print("%s IS JUST RIGHT" % temperature)
             hold()
 
         time.sleep(4)
