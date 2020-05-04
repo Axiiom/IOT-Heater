@@ -43,6 +43,7 @@ async def server(websocket, addr):
         while True:
             print("waiting for message")
             data = await websocket.recv()
+            print("recieved message")
             try:
                 js = json.loads(str(data))
                 if "action" in js and js["action"] == "update":
@@ -50,7 +51,6 @@ async def server(websocket, addr):
                     print("Recieved an update on %s - %s" %
                           (f"ws://{HOST}:{PORT}{addr}", json.dumps(js)))
 
-                g_state.temperature = get_temperature()
                 await websocket.send(repr(g_state))
 
             except Exception as e:

@@ -14,8 +14,12 @@ async def client():
             action = input("(S)end / (R)eceive data: ")
             if action in ["r", "R", "receive"]:
                 print("retrieving")
-                msg = await asyncio.wait_for(ws.recv(), timeout=2)
-                print(msg)
+                try:
+                    msg = await asyncio.wait_for(ws.recv(), timeout=2)
+                    print(msg)
+                except asyncio.TimeoutError as e:
+                    print("timeout")
+                    print(e)
             else:
                 target = float(input("Enter a temperature target: "))
                 deadzone = float(input("Enter a new temperature deadzone: "))
