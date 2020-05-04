@@ -50,6 +50,7 @@ async def server(websocket, addr):
                     print("Recieved an update on %s - %s" %
                           (f"ws://{HOST}:{PORT}{addr}", json.dumps(js)))
 
+                g_state.temperature = get_temperature()
                 await websocket.send(repr(g_state))
 
             except Exception as e:
@@ -65,7 +66,7 @@ def climate_controller():
             continue
 
         temperature = get_temperature()
-        g_state.temperature = temperature
+        # g_state.temperature = temperature
         too_hot = temperature > g_state.target + g_state.deadzone
         too_cold = temperature < g_state.target - g_state.deadzone
         if too_hot:
