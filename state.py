@@ -1,6 +1,7 @@
 import json
 import asyncio
 
+
 class State():
     def __init__(self, temperature=None, target=None, deadzone=None, on=True):
         self.temperature = temperature
@@ -21,3 +22,8 @@ class State():
             "deadzone": self.deadzone,
             "on": self.on
         }
+
+    def get_connections(self):
+        return [
+            conn for conn in self.CONNECTIONS
+        ]
