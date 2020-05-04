@@ -13,6 +13,7 @@ async def client():
         while True:
             action = input("(S)end / (R)eceive data: ")
             if action in ["r", "R", "receive"]:
+                print("retrieving")
                 msg = await ws.recv()
                 print(msg)
             else:

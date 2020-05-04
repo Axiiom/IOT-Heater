@@ -13,7 +13,7 @@ DHT_PIN = int(json.loads(
 )["DHT_PIN"])
 
 
-def get_temperature():
+async def get_temperature():
     _, temperature = Adafruit_DHT.read_retry(SENSOR, DHT_PIN)
     return temperature
 
