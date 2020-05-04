@@ -1,13 +1,11 @@
 import asyncio
 import websockets
 import json
-import random
 import time
 import threading
 
-from _thread import start_new_thread
-
 from state import State
+from temp_ctrlr import get_temperature, cool, heat, hold
 
 base_state = {
     "temperature": 18,
@@ -62,18 +60,6 @@ async def server(websocket, addr):
 
 
 def climate_controller():
-    def get_temperature():
-        return random.randint(0, 100)
-
-    def cool():
-        pass
-
-    def heat():
-        pass
-
-    def hold():
-        pass
-
     while True:
         if not g_state.on:
             continue
