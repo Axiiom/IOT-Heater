@@ -50,8 +50,8 @@ async def server(websocket, addr):
                     await update_state(js)
                     print("Recieved an update on %s - %s" %
                           (f"ws://{HOST}:{PORT}{addr}", json.dumps(js)))
-
-                await websocket.send(repr(g_state))
+                else:
+                    await websocket.send(repr(g_state))
 
             except Exception as e:
                 print(e)
