@@ -15,7 +15,8 @@ async def client():
             if action in ["r", "R", "receive"]:
                 print("retrieving")
                 try:
-                    msg = await asyncio.wait_for(ws.recv(), timeout=2)
+                    await ws.send(json.dumps({"action": "receive"}))
+                    msg = await ws.recv()
                     print(msg)
                 except asyncio.TimeoutError as e:
                     print("timeout")

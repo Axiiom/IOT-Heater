@@ -4,8 +4,8 @@ import json
 
 js = json.loads(open("config.json").read())
 BASE_URL = "%s/%s" % (js["HUE_URL"], js["HUE_APIK"])
-HEATER_URL = "%s/%d/state" % (BASE_URL, js["HEATER_ID"])
-LIGHT_URL = "%s/%d/state" % (BASE_URL, js["LIGHT_ID"])
+HEATER_URL = "%s/lights/%d/state" % (BASE_URL, js["HEATER_ID"])
+LIGHT_URL = "%s/lights/%d/state" % (BASE_URL, js["LIGHT_ID"])
 
 SENSOR = Adafruit_DHT.DHT22
 DHT_PIN = int(json.loads(

@@ -2,7 +2,7 @@
     "host": "192.168.50.184",
     "port": 3005,
     "DHT_PIN": 4,
-    "HUE_URL": "HTTP://192.168.1.12/api",
+    "HUE_URL": "http://192.168.1.12/api",
     "HUE_APIK": "eXbpUKQhYxGRtQRgDKAVlVUzyv0BO8WS5erAYWnu",
     "HEATER_ID": 5,
     "LIGHT_ID": 4

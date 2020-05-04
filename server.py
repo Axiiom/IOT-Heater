@@ -43,12 +43,12 @@ async def server(websocket, addr):
         while True:
             print("waiting for message")
             data = await websocket.recv()
-            print("recieved message")
+            print("received message")
             try:
                 js = json.loads(str(data))
                 if "action" in js and js["action"] == "update":
                     await update_state(js)
-                    print("Recieved an update on %s - %s" %
+                    print("Received an update on %s - %s" %
                           (f"ws://{HOST}:{PORT}{addr}", json.dumps(js)))
                 else:
                     await websocket.send(repr(g_state))
@@ -62,34 +62,31 @@ async def server(websocket, addr):
 
 def climate_controller():
     while True:
-        if not g_state.on:
-            continue
-
-        # g_state.temperature = get_temperature()
-        # too_hot = g_state.temperature > g_state.target + g_state.deadzone
-        # too_cold = g_state.temperature < g_state.target - g_state.deadzone
-        # if too_hot:
-        #     print("%s IS TOO HOT" % g_state.temperature)
-        #     cool()
-        # elif too_cold:
-        #     print("%s IS TOO COLD" % g_state.temperature)
-        #     heat()
-        # else:
-        #     print("%s IS JUST RIGHT" % g_state.temperature)
-        #     hold()
-
-        temperature = get_temperature()
-        too_hot = temperature > g_state.target + g_state.deadzone
-        too_cold = temperature < g_state.target - g_state.deadzone
-        if too_hot:
-            print("%s IS TOO HOT" % temperature)
-            cool()
-        elif too_cold:
-            print("%s IS TOO COLD" % temperature)
-            heat()
-        else:
-            print("%s IS JUST RIGHT" % temperature)
-            hold()
+        if g_state.on:
+            # g_state.temperature = get_temperature()
+            # too_hot = g_state.temperature > g_state.target + g_state.deadzone
+            # too_cold = g_state.temperature < g_state.target - g_state.deadzone
+            # if too_hot:
+            #     print("%s IS TOO HOT" % g_state.temperature)
+            #     cool()
+            # elif too_cold:
+            #     print("%s IS TOO COLD" % g_state.temperature)
+            #     heat()
+            # else:
+            #     print("%s IS JUST RIGHT" % g_state.temperature)
+            #     hold()
+            temperature = get_temperature()
+            too_hot = temperature > g_state.target + g_state.deadzone
+            too_cold = temperature < g_state.target - g_state.deadzone
+            if too_hot:
+                print("%s IS TOO HOT" % temperature)
+                cool()
+            elif too_cold:
+                print("%s IS TOO COLD" % temperature)
+                heat()
+            else:
+                print("%s IS JUST RIGHT" % temperature)
+                hold()
 
         time.sleep(4)
 
