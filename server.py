@@ -50,33 +50,32 @@ async def server(websocket, addr):
                     print("Recieved an update on %s - %s" %
                           (f"ws://{HOST}:{PORT}{addr}", json.dumps(js)))
 
-                g_state.temperature = await get_temperature()
+                g_state.temperature = get_temperature()
                 await websocket.send(repr(g_state))
 
             except Exception as e:
-                print("JSON not found in body")
+                print(e)
 
     finally:
         g_state.CONNECTIONS.remove(websocket)
 
 
-async def climate_controller():
+def climate_controller():
     while True:
         if not g_state.on:
             continue
 
-        temperature = await get_temperature()
-        # g_state.temperature = temperature
-        too_hot = temperature > g_state.target + g_state.deadzone
-        too_cold = temperature < g_state.target - g_state.deadzone
+        g_state.temperature = get_temperature()
+        too_hot = g_state.temperature > g_state.target + g_state.deadzone
+        too_cold = g_state.temperature < g_state.target - g_state.deadzone
         if too_hot:
-            print(f"{temperature} IS TOO HOT")
+            print("%s IS TOO HOT" % g_state.temperature)
             cool()
         elif too_cold:
-            print(f"{temperature} IS TOO COLD")
+            print("%s IS TOO COLD" % g_state.temperature)
             heat()
         else:
-            print(f"{temperature} IS JUST RIGHT")
+            print("%s IS JUST RIGHT" % g_state.temperature)
             hold()
 
         time.sleep(4)

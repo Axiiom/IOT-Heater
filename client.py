@@ -14,7 +14,7 @@ async def client():
             action = input("(S)end / (R)eceive data: ")
             if action in ["r", "R", "receive"]:
                 print("retrieving")
-                msg = await ws.recv()
+                msg = await asyncio.wait_for(ws.recv(), timeout=2)
                 print(msg)
             else:
                 target = float(input("Enter a temperature target: "))
