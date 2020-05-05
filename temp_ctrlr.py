@@ -5,8 +5,9 @@ from config import Config
 
 
 def get_temperature():
+    # get temperature and convert to fahrenheit
     _, temperature = Adafruit_DHT.read_retry(Config.SENSOR, Config.DHT_PIN)
-    return temperature
+    return (temperature * (9/5)) + 32
 
 
 def heat():

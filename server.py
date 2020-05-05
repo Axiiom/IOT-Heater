@@ -43,9 +43,9 @@ async def server(websocket, path):
                 js = json.loads(str(data))
                 if "action" in js and js["action"] == "update":
                     await update_state(js)
-                    print("[%s] - %s\n\t%s" % (connection, ws_path, json.dumps(js)))
+                    print("[%s] - %s\n%s\n" % (connection, ws_path, json.dumps(js)))
                 else:
-                    print("[%s] - %s" % (connection, ws_path))
+                    print("[%s] - %s\n" % (connection, ws_path))
                     await websocket.send(repr(g_state))
 
             except Exception as e:
@@ -84,7 +84,7 @@ def climate_controller():
 
 
 # begin listening
-print("Setting up Websocket Server on port 3001 ... ")
+print("Setting up Web Socket Server on port 3001 ... ")
 start_server = websockets.serve(server, HOST, PORT)
 print("Server running")
 
