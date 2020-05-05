@@ -35,10 +35,12 @@ async def update_state(js):
         g_state.on = js["on"]
 
 
-async def server(websocket, addr):
+async def server(websocket, path):
+    connection = websocket.remote_address[0]
+    ws_path = f"ws://{HOST}:{PORT}{path}"
+
     g_state.CONNECTIONS.add(websocket)
     try:
-        # await websocket.send(repr(g_state))
         while True:
             print("waiting for message")
             data = await websocket.recv()
@@ -47,14 +49,15 @@ async def server(websocket, addr):
                 js = json.loads(str(data))
                 if "action" in js and js["action"] == "update":
                     await update_state(js)
-                    print("Received an update on %s - %s" %
-                          (f"ws://{HOST}:{PORT}{addr}", json.dumps(js)))
+                    print("[%s] - %s\n\t%s" % (connection, ws_path, json.dumps(js)))
                 else:
+                    print("[%s] - %s" % (connection, ws_path))
                     await websocket.send(repr(g_state))
 
             except Exception as e:
                 print(e)
-
+    except Exception as e:
+        print(e)
     finally:
         g_state.CONNECTIONS.remove(websocket)
 
@@ -62,24 +65,12 @@ async def server(websocket, addr):
 def climate_controller():
     while True:
         if g_state.on:
-            # g_state.temperature = get_temperature()
-            # too_hot = g_state.temperature > g_state.target + g_state.deadzone
-            # too_cold = g_state.temperature < g_state.target - g_state.deadzone
-            # if too_hot:
-            #     print("%s IS TOO HOT" % g_state.temperature)
-            #     cool()
-            # elif too_cold:
-            #     print("%s IS TOO COLD" % g_state.temperature)
-            #     heat()
-            # else:
-            #     print("%s IS JUST RIGHT" % g_state.temperature)
-            #     hold()
             temperature = get_temperature()
             g_state.temperature = temperature
             too_hot = temperature > g_state.target + g_state.deadzone
             too_cold = temperature < g_state.target - g_state.deadzone
             temp_range = "%.2f - %.2f" % (g_state.temperature - g_state.deadzone, 
-                    g_state.temperature + g_state.deadzone)
+                g_state.temperature + g_state.deadzone)
 
             if too_hot:
                 print("%.2f IS TOO HOT, RANGE IS: %s" % ( temperature, repr(temp_range) ))
@@ -90,6 +81,8 @@ def climate_controller():
             else:
                 print("%.2f IS JUST RIGHT, RANGE IS: %s" % ( temperature, repr(temp_range) ))
                 hold()
+        else:
+            hold()
 
         time.sleep(4)
 
