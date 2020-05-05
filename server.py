@@ -29,29 +29,26 @@ async def update_state(js):
         g_state.on = js["on"]
 
 
-async def server(websocket, path):
-    connection = websocket.remote_address[0]
-    ws_path = f"ws://{HOST}:{PORT}{path}"
-
+async def server(websocket, _):
     g_state.CONNECTIONS.add(websocket)
+
+    connection = websocket.remote_address[0]
+    print(f"[{connection}] connected!")
     try:
         while True:
-            print("waiting for message")
             data = await websocket.recv()
-            print("received message")
+            print(f"Received message from {connection}")
             try:
                 js = json.loads(str(data))
                 if "action" in js and js["action"] == "update":
                     await update_state(js)
-                    print("[%s] - %s\n%s\n" % (connection, ws_path, json.dumps(js)))
                 else:
-                    print("[%s] - %s\n" % (connection, ws_path))
                     await websocket.send(repr(g_state))
 
             except Exception as e:
                 print(e)
     except Exception as e:
-        print(e)
+        print(f"[{connection} disconnected! - {e}")
     finally:
         g_state.CONNECTIONS.remove(websocket)
 
