@@ -2,10 +2,8 @@ import json
 import websockets
 import asyncio
 
-from config import Config
-
-HOST = Config.HOST
-PORT = Config.PORT
+HOST = "192.168.50.184"
+PORT = 3005
 
 
 async def client():

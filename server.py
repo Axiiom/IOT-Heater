@@ -59,21 +59,23 @@ async def server(websocket, path):
 def climate_controller():
     while True:
         if g_state.on:
-            temperature = get_temperature()
-            g_state.temperature = temperature
-            too_hot = temperature > g_state.target + g_state.deadzone
-            too_cold = temperature < g_state.target - g_state.deadzone
-            temp_range = "%.2f - %.2f" % (g_state.temperature - g_state.deadzone,
-                                          g_state.temperature + g_state.deadzone)
+            g_state.temperature = get_temperature()
 
-            if too_hot:
-                print("%.2f IS TOO HOT, RANGE IS: %s" % (temperature, repr(temp_range)))
+            lower_bound = g_state.target - g_state.deadzone
+            upper_bound = g_state.target + g_state.deadzone
+            temp_range = f"{lower_bound} - {upper_bound}"
+
+            if g_state.temperature > upper_bound:
+                print("%.2f IS TOO HOT, RANGE IS: %s" % (
+                    g_state.temperature, temp_range))
                 cool()
-            elif too_cold:
-                print("%.2f IS TOO COLD, RANGE IS: %s" % (temperature, repr(temp_range)))
+            elif g_state.temperature < lower_bound:
+                print("%.2f IS TOO COLD, RANGE IS: %s" % (
+                    g_state.temperature, temp_range))
                 heat()
             else:
-                print("%.2f IS JUST RIGHT, RANGE IS: %s" % (temperature, repr(temp_range)))
+                print("%.2f IS JUST RIGHT, RANGE IS: %s" % (
+                    g_state.temperature, temp_range))
                 hold()
         else:
             hold()
