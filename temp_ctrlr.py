@@ -2,15 +2,15 @@ import Adafruit_DHT
 import requests
 import json
 
-js = json.loads(open("config.json").read())
-BASE_URL = "%s/%s" % (js["HUE_URL"], js["HUE_APIK"])
-HEATER_URL = "%s/lights/%d/state" % (BASE_URL, js["HEATER_ID"])
-LIGHT_URL = "%s/lights/%d/state" % (BASE_URL, js["LIGHT_ID"])
+# retrieve settings
+with open("config.json") as file:
+    settings = json.loads(file.read())
+    BASE_URL = "%s/%s" % (settings["HUE_URL"], settings["HUE_APIK"])
+    HEATER_URL = "%s/lights/%d/state" % (BASE_URL, settings["HEATER_ID"])
+    LIGHT_URL = "%s/lights/%d/state" % (BASE_URL, settings["LIGHT_ID"])
 
-SENSOR = Adafruit_DHT.DHT22
-DHT_PIN = int(json.loads(
-    open("config.json").read()
-)["DHT_PIN"])
+    SENSOR = Adafruit_DHT.DHT22
+    DHT_PIN = int(settings["DHT_PIN"])
 
 
 def get_temperature():
