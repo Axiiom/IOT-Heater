@@ -76,16 +76,20 @@ def climate_controller():
             #     print("%s IS JUST RIGHT" % g_state.temperature)
             #     hold()
             temperature = get_temperature()
+            g_state.temperature = temperature
             too_hot = temperature > g_state.target + g_state.deadzone
             too_cold = temperature < g_state.target - g_state.deadzone
+            temp_range = "%.2f - %.2f" % (g_state.temperature - g_state.deadzone, 
+                    g_state.temperature + g_state.deadzone)
+
             if too_hot:
-                print("%s IS TOO HOT" % temperature)
+                print("%.2f IS TOO HOT, RANGE IS: %s" % ( temperature, repr(temp_range) ))
                 cool()
             elif too_cold:
-                print("%s IS TOO COLD" % temperature)
+                print("%.2f IS TOO COLD, RANGE IS: %s" % ( temperature, repr(temp_range) ))
                 heat()
             else:
-                print("%s IS JUST RIGHT" % temperature)
+                print("%.2f IS JUST RIGHT, RANGE IS: %s" % ( temperature, repr(temp_range) ))
                 hold()
 
         time.sleep(4)
