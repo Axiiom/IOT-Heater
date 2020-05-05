@@ -25,15 +25,14 @@ async def update_clients():
 
 
 async def update_state(js):
-    temperature = g_state.temperature if "temperature" not in js else js["temperature"]
-    target = g_state.target if "target" not in js else js["target"]
-    deadzone = g_state.deadzone if "deadzone" not in js else js["deadzone"]
-    on = g_state.on if "on" not in js else js["on"]
-
-    g_state.temperature = temperature
-    g_state.target = target
-    g_state.deadzone = deadzone
-    g_state.on = on
+    if "temperature" in js:
+        g_state.temperature = js["temperature"]
+    if "target" in js:
+        g_state.target = js["target"]
+    if "deadzone" in js:
+        g_state.deadzone = js["deadzone"]
+    if "on" in js:
+        g_state.on = js["on"]
 
 
 async def server(websocket, addr):
