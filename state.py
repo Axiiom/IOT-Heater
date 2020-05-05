@@ -1,8 +1,7 @@
 import json
-import asyncio
 
 
-class State():
+class State:
     def __init__(self, temperature=None, target=None, deadzone=None, on=True):
         self.temperature = temperature
         self.target = target

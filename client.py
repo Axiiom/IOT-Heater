@@ -1,10 +1,11 @@
 import json
 import websockets
-import time
 import asyncio
 
-HOST = json.loads(open("config.json").read())["host"]
-PORT = json.loads(open("config.json").read())["port"]
+from config import Config
+
+HOST = Config.HOST
+PORT = Config.PORT
 
 
 async def client():

@@ -4,19 +4,13 @@ import json
 import time
 import threading
 
+from config import Config
 from state import State
 from temp_ctrlr import get_temperature, cool, heat, hold
 
-base_state = {
-    "temperature": 18,
-    "target": 24,
-    "deadzone": 0.2,
-    "on": True
-}
-
-g_state = State(**base_state)
-HOST = json.loads(open("config.json").read())["host"]
-PORT = int(json.loads(open("config.json").read())["port"])
+g_state = State(temperature=18.0, target=24.5, deadzone=0.2, on=True)
+HOST = Config.HOST
+PORT = Config.PORT
 
 
 async def update_clients():
@@ -69,17 +63,17 @@ def climate_controller():
             g_state.temperature = temperature
             too_hot = temperature > g_state.target + g_state.deadzone
             too_cold = temperature < g_state.target - g_state.deadzone
-            temp_range = "%.2f - %.2f" % (g_state.temperature - g_state.deadzone, 
-                g_state.temperature + g_state.deadzone)
+            temp_range = "%.2f - %.2f" % (g_state.temperature - g_state.deadzone,
+                                          g_state.temperature + g_state.deadzone)
 
             if too_hot:
-                print("%.2f IS TOO HOT, RANGE IS: %s" % ( temperature, repr(temp_range) ))
+                print("%.2f IS TOO HOT, RANGE IS: %s" % (temperature, repr(temp_range)))
                 cool()
             elif too_cold:
-                print("%.2f IS TOO COLD, RANGE IS: %s" % ( temperature, repr(temp_range) ))
+                print("%.2f IS TOO COLD, RANGE IS: %s" % (temperature, repr(temp_range)))
                 heat()
             else:
-                print("%.2f IS JUST RIGHT, RANGE IS: %s" % ( temperature, repr(temp_range) ))
+                print("%.2f IS JUST RIGHT, RANGE IS: %s" % (temperature, repr(temp_range)))
                 hold()
         else:
             hold()
@@ -92,11 +86,9 @@ print("Setting up Websocket Server on port 3001 ... ")
 start_server = websockets.serve(server, HOST, PORT)
 print("Server running")
 
-
 controller = threading.Thread(target=climate_controller)
 controller.daemon = True
 controller.start()
-
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
