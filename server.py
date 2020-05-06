@@ -8,7 +8,7 @@ from config import Config
 from state import State
 from temp_ctrlr import get_temperature, cool, heat, hold
 
-g_state = State(temperature=18.0, target=24.5, deadzone=0.2, on=True)
+g_state = State(temperature=18.0, target=79, deadzone=0.2, on=True)
 HOST = Config.HOST
 PORT = Config.PORT
 
@@ -19,14 +19,17 @@ async def update_clients():
 
 
 async def update_state(js):
-    if "temperature" in js:
-        g_state.temperature = js["temperature"]
-    if "target" in js:
-        g_state.target = js["target"]
-    if "deadzone" in js:
-        g_state.deadzone = js["deadzone"]
-    if "on" in js:
-        g_state.on = js["on"]
+    try: 
+        if "temperature" in js:
+            g_state.temperature = int(js["temperature"])
+        if "target" in js:
+            g_state.target = int(js["target"])
+        if "deadzone" in js:
+            g_state.deadzone = int(js["deadzone"])
+        if "on" in js:
+            g_state.on = js["on"]
+    except:
+        pass
 
 
 async def server(websocket, _):
